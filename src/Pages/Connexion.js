@@ -26,7 +26,7 @@ const Connexion = () => {
           payload: {
             name: connectResponse.data.user.name,
             userTypeID:
-              connectResponse.data.user.Idtype === 2 ? "Admin" : "Client",
+              connectResponse.data.user.Idtype === 2 ? "admin" : "Client",
           },
         });
         localStorage.setItem("token", connectResponse.data.token);

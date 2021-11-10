@@ -19,6 +19,7 @@ const Header = () => {
   const { data, loading, error } = useFetch(
     "http://localhost:8000/api/getCatalogues"
   );
+  console.log(connectContext.connectState.userData?.userTypeID);
 
   const categoriePrepared = prepareCategorieForDropdown(data.categories);
   return (
@@ -46,7 +47,7 @@ const Header = () => {
           <DropDown loading={loading} data={categoriePrepared} error={error} />
         </Title>
 
-        {connectContext.connectState.userData?.userTypeID === "Admin" ? (
+        {connectContext.connectState.userData?.userTypeID === "admin" ? (
           <Title
             text="Admin Pages"
             cursor="pointer"
