@@ -52,7 +52,7 @@ const AddCategorie = () => {
         {renderFormInputs()}
 
         <Button
-          disabled={isFormValid()}
+          disabled={!isFormValid()}
           type="submit"
           buttonText="Add Categorie"
           btnStyle={buttonStyle.default}

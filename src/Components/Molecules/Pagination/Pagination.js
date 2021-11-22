@@ -10,7 +10,7 @@ const Pagination = (props) => {
         ? Array(
             Math.floor(props.number / 10) === 0
               ? 1
-              : Math.floor(props.number / 10)
+              : Math.floor(props.number / 10 + 1)
           )
             .fill(1)
             .map((item, index) => (
