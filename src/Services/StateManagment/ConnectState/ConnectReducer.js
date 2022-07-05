@@ -19,7 +19,6 @@ export const reducerFunc = (state = initialState, action) => {
       };
 
     default:
-      state;
-      break;
+      return state;
   }
 };

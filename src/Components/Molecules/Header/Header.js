@@ -10,18 +10,48 @@ import { FiTwitter } from "react-icons/fi";
 import { VscDiffAdded } from "react-icons/vsc";
 import CostumLink from "Components/Atoms/CostumLink/CostumLink";
 import { ConnectContext } from "Services/StateManagment/ConnectState/ConnectContext";
-import DropDown from "../DropDown/DropDown";
-import { useFetch } from "Hooks/useFetch";
+//import DropDown from "../DropDown/DropDown";
+//import { useFetch } from "Hooks/useFetch";
+//import { AdminPages } from "StaticData/AdminPages";
+//import { prepareCategorieForDropdown } from "Services/utils/prepareCategorieForDropDown";
+import BasicMenu from "../BasicMenu/BasicMenu";
 import { AdminPages } from "StaticData/AdminPages";
-import { prepareCategorieForDropdown } from "Services/utils/prepareCategorieForDropDown";
+import LinkBasicMenu from "../LinkBasicMenu/LinkBasicMenu";
+import axios from "axios";
+import { CategorieContext } from "Services/StateManagment/CategoriesState/CategorieContext";
+
 const Header = () => {
   const connectContext = useContext(ConnectContext);
-  const { data, loading, error } = useFetch(
-    "http://localhost:8000/api/getCatalogues"
-  );
-  console.log(connectContext.connectState.userData?.userTypeID);
+  const categoriesContext = useContext(CategorieContext);
+  // const { data, loading, error } = useFetch(
+  //   "http://localhost:8000/api/getCatalogues"
+  // );
+  console.log(connectContext.connectState.userData);
+  const reformCatData = (cats) => {
+    return cats.map((el) => {
+      const data = {
+        title: el.nom,
+        id: el.id,
+      };
+      return data;
+    });
+  };
+  const fetchCategories = async () => {
+    console.log(categoriesContext.categoriesState.categories);
+    if (!categoriesContext.categoriesState.fetched) {
+      const response = await axios.get(
+        "http://localhost:8000/api/getCatalogues"
+      );
+      console.log(reformCatData(response.data.categories));
+      categoriesContext.categoriesDispatch({
+        type: "ADD_CATEGORIES",
+        payload: reformCatData(response.data.categories),
+      });
 
-  const categoriePrepared = prepareCategorieForDropdown(data.categories);
+      //  console.log(reformCatData(response.data.categories));
+    }
+  };
+  //const categoriePrepared = prepareCategorieForDropdown(data.categories);
   return (
     <Row>
       <div
@@ -34,28 +64,19 @@ const Header = () => {
       </div>
       <Row>
         <CostumLink
-          className="margin-10px transition-0-5-s opacity-0-5"
+          className="underLine margin-10px transition-0-5-s opacity-0-5"
           path="/1"
-          title="Products"
+          title="PRODUCT"
         />
-        <Title
-          text="Categorie"
-          cursor="pointer"
-          contentStyle="cargorieTitle  position-relative"
-          className="margin-10px transition-0-5-s  opacity-0-5"
-        >
-          <DropDown loading={loading} data={categoriePrepared} error={error} />
-        </Title>
+
+        <BasicMenu
+          propMethod={fetchCategories}
+          menuItems={categoriesContext.categoriesState.categories}
+          menutitle="Categories"
+        />
 
         {connectContext.connectState.userData?.userTypeID === "admin" ? (
-          <Title
-            text="Admin Pages"
-            cursor="pointer"
-            contentStyle="cargorieTitle  position-relative"
-            className="margin-10px transition-0-5-s  opacity-0-5"
-          >
-            <DropDown width={300} data={AdminPages} />
-          </Title>
+          <LinkBasicMenu menuItems={AdminPages} menutitle="Admin Pages" />
         ) : null}
       </Row>
       <Row className="justifyContent-flexEnd">

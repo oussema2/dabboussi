@@ -14,6 +14,9 @@ import { useEffect, useReducer } from "react";
 import ReactModal from "react-modal";
 import { Switch } from "react-router";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { CategorieContext } from "Services/StateManagment/CategoriesState/CategorieContext";
+import { initialCategories } from "Services/StateManagment/CategoriesState/CategorieReduces";
+import { reducerCategorie } from "Services/StateManagment/CategoriesState/CategorieReduces";
 import { ConnectContext } from "Services/StateManagment/ConnectState/ConnectContext";
 import { initialState } from "Services/StateManagment/ConnectState/ConnectReducer";
 import { reducerFunc } from "Services/StateManagment/ConnectState/ConnectReducer";
@@ -39,7 +42,10 @@ const routes = [
 function App() {
   fetchCategorie();
   const [connect, dispatch] = useReducer(reducerFunc, initialState);
-
+  const [categories, dispatchCategories] = useReducer(
+    reducerCategorie,
+    initialCategories
+  );
   useEffect(() => {
     ReactModal.setAppElement("#root");
     (async () => {
@@ -64,26 +70,33 @@ function App() {
   }, []);
 
   return (
-    <ConnectContext.Provider
-      value={{ connectState: connect, connectDispatch: dispatch }}
+    <CategorieContext.Provider
+      value={{
+        categoriesState: categories,
+        categoriesDispatch: dispatchCategories,
+      }}
     >
-      <Router>
-        <div className="flex-1 padding-50px projectFont">
-          <Header />
+      <ConnectContext.Provider
+        value={{ connectState: connect, connectDispatch: dispatch }}
+      >
+        <Router>
+          <div className="flex-1 padding-50px projectFont">
+            <Header />
 
-          <Switch>
-            {routes.map((route, i) => (
-              <Route
-                key={i}
-                path={route.to}
-                exact
-                component={route.component}
-              />
-            ))}
-          </Switch>
-        </div>
-      </Router>
-    </ConnectContext.Provider>
+            <Switch>
+              {routes.map((route, i) => (
+                <Route
+                  key={i}
+                  path={route.to}
+                  exact
+                  component={route.component}
+                />
+              ))}
+            </Switch>
+          </div>
+        </Router>
+      </ConnectContext.Provider>
+    </CategorieContext.Provider>
   );
 }
 

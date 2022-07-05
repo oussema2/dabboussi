@@ -1,7 +1,7 @@
 import axios from "axios";
 import Button from "Components/Atoms/Buttons/Button";
 import { buttonStyle } from "Components/Atoms/Buttons/Button";
-import Notification from "Components/Molecules/Notification/Notification";
+//import Notification from "Components/Molecules/Notification/Notification";
 import { useForm } from "Hooks/useForm";
 import React from "react";
 import { useHistory } from "react-router";
@@ -9,7 +9,7 @@ import { breakTime } from "StaticData/BreackTime";
 import { registerForm } from "StaticData/RegisterForm";
 
 const Register = () => {
-  const [notificationView, notif] = Notification();
+  // const [notificationView, notif] = Notification();
   const history = useHistory();
 
   const { renderFormInputs, isFormValid, handleSubmit } = useForm(
@@ -21,13 +21,14 @@ const Register = () => {
       userData["email"] = formObj.email.value;
       userData["password"] = formObj.password.value;
       userData["dateDeNaissance"] = formObj.birthDate.value;
+      console.log(userData);
       try {
         const response = await axios.post(
           "http://localhost:8000/api/register",
           userData
         );
         if (response.data.status === 200) {
-          notif(breakTime);
+          // notif(breakTime);
           setTimeout(() => {
             history.push("/connexion");
           }, breakTime);
@@ -54,7 +55,7 @@ const Register = () => {
           btnStyle={buttonStyle.default}
         />
       </form>
-      {notificationView("Registration success")}
+      {/* {notificationView("Registration success")} */}
     </div>
   );
 };
